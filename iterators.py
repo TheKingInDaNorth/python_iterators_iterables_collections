@@ -53,7 +53,7 @@ class PreOrderIterator:
         index = self._stack.pop()
         result = self._sequence[index]
 
-        # Pre-order: Push right child first so left chld is poppped and processed.
+        # Pre-order: Push right child first so left child is popped and processed.
         # Last-in, first-out data structure
         right_child_index = _right_child(index)
         if right_child_index < len(self._sequence):
@@ -63,6 +63,34 @@ class PreOrderIterator:
         if left_child_index < len(self._sequence):
             self._stack.append(left_child_index)
 
+        return result
+
+    def __iter__(self):
+        return self
+
+
+class InOrderIterator:
+
+    def __init__(self, sequence):
+        if not _is_perfect_length(sequence):
+            raise ValueError(f"Sequence of length {len(sequence)} does not represent"
+                             " a perfect binary tree with length 2^n - 1")
+        self._sequence = sequence
+        self._stack = []
+        self._index = 0
+
+    def __next__(self):
+        if (len(self._stack) == 0) and (self._index >= len(self._sequence)):
+            raise StopIteration
+
+        # Push left children onto the stack while possible
+        while self._index < len(self._sequence):
+            self._stack.append(self._index)
+            self._index = _left_child(self._index)
+
+        index = self._stack.pop()
+        result = self._sequence[index]
+        self._index = _right_child(index)
         return result
 
     def __iter__(self):
