@@ -113,3 +113,17 @@ class SkipMissingIterator:
 
     def __iter__(self):
         return self
+
+
+class TranslationIterator:
+
+    def __init__(self, table, iterable):
+        self._table = table
+        self._iterator = iter(iterable)
+
+    def __next__(self):
+        item = next(self._iterator)
+        return self._table.get(item, item)
+
+    def __iter__(self):
+        return self
