@@ -22,3 +22,17 @@ class SortedFrozenSet:
             if isinstance(index, slice)
             else result
         )
+
+    def __repr__(self):
+        return "{type}({arg})".format(
+            type=type(self).__name__,
+            arg=(
+                repr(self._items)
+                if self._items else ""
+            )
+        )
+
+    def __eq__(self, rhs):
+        if not isinstance(rhs, type(self)):
+            return NotImplemented
+        return self._items == rhs._items

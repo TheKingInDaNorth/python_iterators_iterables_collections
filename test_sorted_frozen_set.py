@@ -108,7 +108,7 @@ class TestSequenceProtocol(unittest.TestCase):
             self.s[-6]
 
     def test_slice_from_start(self):
-        self.assertEqual(self.s[:3], SortedFrozenSet([1, 4, 5]))
+        self.assertEqual(self.s[:3], SortedFrozenSet([1, 4, 9]))
 
     def test_slice_to_end(self):
         self.assertEqual(self.s[3:], SortedFrozenSet([13, 15]))
@@ -124,6 +124,39 @@ class TestSequenceProtocol(unittest.TestCase):
 
     def test_slice_full(self):
         self.assertEqual(self.s[:], self.s)
+
+
+class TestReprProtocol(unittest.TestCase):
+
+    def test_repr_empty(self):
+        s = SortedFrozenSet()
+        self.assertEqual(repr(s), "SortedFrozenSet()")
+
+    def test_repr_one(self):
+        s = SortedFrozenSet([42, 40,  19])
+        self.assertEqual(repr(s), "SortedFrozenSet([19, 40, 42])")
+
+
+class TestEqualityProtocol(unittest.TestCase):
+
+    def test_positive_equal(self):
+        self.assertTrue(
+            SortedFrozenSet([4, 5, 6]) == SortedFrozenSet([6, 5, 4])
+        )
+
+    def test_negative_equal(self):
+        self.assertFalse(
+            SortedFrozenSet([4, 5, 6]) == SortedFrozenSet([1, 2, 3])
+        )
+
+    def test_type_mismatch(self):
+        self.assertFalse(
+            SortedFrozenSet([4, 5, 6]) == [4, 5, 6]
+        )
+
+    def test_identical(self):
+        s = SortedFrozenSet([10, 11, 12])
+        self.assertTrue(s == s)
 
 
 if __name__ == "__main__":
