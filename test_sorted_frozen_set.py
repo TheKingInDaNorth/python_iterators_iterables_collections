@@ -133,7 +133,7 @@ class TestReprProtocol(unittest.TestCase):
         self.assertEqual(repr(s), "SortedFrozenSet()")
 
     def test_repr_one(self):
-        s = SortedFrozenSet([42, 40,  19])
+        s = SortedFrozenSet([42, 40, 19])
         self.assertEqual(repr(s), "SortedFrozenSet([19, 40, 42])")
 
 
@@ -157,6 +157,30 @@ class TestEqualityProtocol(unittest.TestCase):
     def test_identical(self):
         s = SortedFrozenSet([10, 11, 12])
         self.assertTrue(s == s)
+
+
+class TestInequalityProtocol(unittest.TestCase):
+    def test_positive_unequal(self):
+        self.assertTrue(SortedFrozenSet([4, 5, 6]) != SortedFrozenSet([1, 2, 3]))
+
+    def test_negative_unequal(self):
+        self.assertFalse(SortedFrozenSet([4, 5, 6]) != SortedFrozenSet([4, 5, 6]))
+
+    def test_type_mismatch(self):
+        self.assertTrue(SortedFrozenSet([1, 2, 3]) != [1, 2, 3])
+
+    def test_identical(self):
+        s = SortedFrozenSet([10, 11, 12])
+        self.assertFalse(s != s)
+
+
+class TestHashableProtocol(unittest.TestCase):
+
+    def test_equal_sets_have_the_same_hash_code(self):
+        self.assertEqual(
+            hash(SortedFrozenSet([5, 2, 1, 4])),
+            hash(SortedFrozenSet([5, 2, 1 , 4]))
+        )
 
 
 if __name__ == "__main__":
