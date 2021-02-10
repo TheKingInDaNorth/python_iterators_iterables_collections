@@ -151,6 +151,55 @@ class TestSequenceProtocol(unittest.TestCase):
         s = SortedFrozenSet([1, 5, 7, 9])
         self.assertEqual(s.count(7), 1)
 
+    def test_add_disjoint(self):
+        s = SortedFrozenSet([1, 2, 3])
+        t = SortedFrozenSet([4, 5, 6])
+        self.assertEqual(s + t, SortedFrozenSet([1, 2, 3 ,4, 5, 6]))
+
+    def test_add_equal(self):
+        s = SortedFrozenSet([2, 4, 6])
+        self.assertEqual(s + s, s)
+
+    def test_add_intersecting(self):
+        s = SortedFrozenSet([1, 2, 3])
+        t = SortedFrozenSet([3, 4, 5])
+
+    def test_add_type_error_left(self):
+        s = SortedFrozenSet([1, 2, 3])
+        t = (3, 4, 5)
+        with self.assertRaises(TypeError):
+            _ = s + t
+
+    def test_add_type_error_right(self):
+        s = (3, 4, 5)
+        t = SortedFrozenSet([1, 2, 3])
+        with self.assertRaises(TypeError):
+            _ = s + t
+
+    def test_repetition_zero_right(self):
+        s = SortedFrozenSet([4, 5, 6])
+        self.assertEqual(s * 0, SortedFrozenSet())
+
+    def test_repetition_negative_right(self):
+        s = SortedFrozenSet([4, 5, 6])
+        self.assertEqual(s * -1, SortedFrozenSet())
+
+    def test_repetition_nonzero_right(self):
+        s = SortedFrozenSet([4, 5, 6])
+        self.assertEqual(s * 100, s)
+
+    def test_repetition_zero_left(self):
+        s = SortedFrozenSet([4, 5, 6])
+        self.assertEqual(0 * s, SortedFrozenSet())
+
+    def test_repetition_negative_left(self):
+        s = SortedFrozenSet([4, 5, 6])
+        self.assertEqual(-1 * s, SortedFrozenSet())
+
+    def test_repetition_nonzero_left(self):
+        s = SortedFrozenSet([4, 5 ,6])
+        self.assertEqual(100 * s, s)
+
 
 class TestReprProtocol(unittest.TestCase):
 
