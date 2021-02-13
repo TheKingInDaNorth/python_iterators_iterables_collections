@@ -1,4 +1,5 @@
 import unittest
+from collections import Iterable, Sized, Container, Sequence, Hashable
 
 from sorted_frozen_set import SortedFrozenSet
 
@@ -37,6 +38,9 @@ class TestContainerProtocol(unittest.TestCase):
     def test_negative_not_contained(self):
         self.assertFalse(9 not in self.s)
 
+    def test_protocol(self):
+        self.assertTrue(issubclass(SortedFrozenSet, Container))
+
 
 class TestSizedProtocol(unittest.TestCase):
 
@@ -60,6 +64,9 @@ class TestSizedProtocol(unittest.TestCase):
         s = SortedFrozenSet([5, 5, 5])
         self.assertEqual(len(s), 1)
 
+    def test_protocol(self):
+        self.assertTrue(issubclass(SortedFrozenSet, Sized))
+
 
 class TestIterableProtocol(unittest.TestCase):
 
@@ -80,6 +87,9 @@ class TestIterableProtocol(unittest.TestCase):
         for item in self.s:
             self.assertEqual(item, expected[index])
             index += 1
+
+    def test_protocol(self):
+        self.assertTrue(issubclass(SortedFrozenSet, Iterable))
 
 
 class TestSequenceProtocol(unittest.TestCase):
@@ -197,8 +207,11 @@ class TestSequenceProtocol(unittest.TestCase):
         self.assertEqual(-1 * s, SortedFrozenSet())
 
     def test_repetition_nonzero_left(self):
-        s = SortedFrozenSet([4, 5 ,6])
+        s = SortedFrozenSet([4, 5, 6])
         self.assertEqual(100 * s, s)
+
+    def test_protocol(self):
+        self.assertTrue(issubclass(SortedFrozenSet, Sequence))
 
 
 class TestReprProtocol(unittest.TestCase):
@@ -254,8 +267,72 @@ class TestHashableProtocol(unittest.TestCase):
     def test_equal_sets_have_the_same_hash_code(self):
         self.assertEqual(
             hash(SortedFrozenSet([5, 2, 1, 4])),
-            hash(SortedFrozenSet([5, 2, 1 , 4]))
+            hash(SortedFrozenSet([5, 2, 1, 4]))
         )
+
+    def test_protocol(self):
+        self.assertTrue(issubclass(SortedFrozenSet, Hashable))
+
+
+class TestRelationalSetProtocol(unittest.TestCase):
+
+    def test_lt_positive(self):
+        s = SortedFrozenSet({1, 2})
+        t = SortedFrozenSet({1, 2, 3})
+        self.assertTrue(s < t)
+
+    def test_lt_negative(self):
+        s = SortedFrozenSet({1, 2, 3})
+        t = SortedFrozenSet({1, 2, 3})
+        self.assertFalse(s < t)
+
+    def test_le_lt_positive(self):
+        s = SortedFrozenSet({1, 2})
+        t = SortedFrozenSet({1, 2, 3})
+        self.assertTrue(s <= t)
+
+    def test_le_eq_positive(self):
+        s = SortedFrozenSet({1, 2, 3})
+        t = SortedFrozenSet({1, 2, 3})
+        self.assertFalse(s <= t)
+
+    def test_le_negative(self):
+        s = SortedFrozenSet({1, 2, 3})
+        t = SortedFrozenSet({1, 2})
+        self.assertFalse(s <= t)
+
+    def test_gt_positive(self):
+        s = SortedFrozenSet({1, 2, 3})
+        t = SortedFrozenSet({1, 2})
+        self.assertTrue(s > t)
+
+    def test_gt_negative(self):
+        s = SortedFrozenSet({1, 2})
+        t = SortedFrozenSet({1, 2, 3})
+        self.assertFalse(s > t)
+
+    def test_ge_gt_positive(self):
+        s = SortedFrozenSet({1, 2, 3})
+        t = SortedFrozenSet({1, 2})
+        self.assertTrue(s > t)
+
+    def test_ge_eq_positive(self):
+        s = SortedFrozenSet({1, 2, 3})
+        t = SortedFrozenSet({1, 2, 3})
+        self.assertTrue(s >= t)
+
+    def test_ge_negative(self):
+        s = SortedFrozenSet({1, 2})
+        t = SortedFrozenSet({1, 2, 3})
+        self.assertFalse(s >= t)
+
+
+class TestSetRelationalMethods(unittest.TestCase):
+
+    def test_issubset_proper_positive(self):
+        s = SortedFrozenSet({1, 2})
+        t = [1, 2 ,3]
+        self.assertTrue(s.issubset(t))
 
 
 if __name__ == "__main__":
